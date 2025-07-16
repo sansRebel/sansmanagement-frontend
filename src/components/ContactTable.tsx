@@ -33,14 +33,16 @@ export default function ContactTable({
           {contacts.map((contact) => (
             <tr
               key={contact.id}
-              className="hover:bg-blue-50/60 transition duration-200 ease-in-out"
+              className="transition duration-200 ease-in-out group hover:scale-[1.015] hover:-translate-y-0.5 hover:shadow-md hover:bg-blue-50/50"
             >
-              <td className="px-6 py-4">{contact.name}</td>
+              <td className="px-6 py-4 rounded-l-xl group-hover:backdrop-blur-sm">
+                {contact.name}
+              </td>
               <td className="px-6 py-4">{contact.email}</td>
               <td className="px-6 py-4">{contact.phone}</td>
               <td className="px-6 py-4">{contact.company || '-'}</td>
               <td className="px-6 py-4">{contact.category}</td>
-              <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+              <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap rounded-r-xl">
                 <button
                   className="text-slate-600 hover:text-slate-800 inline-flex items-center gap-1"
                   onClick={() => onView(contact)}

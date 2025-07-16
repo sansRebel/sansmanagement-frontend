@@ -42,32 +42,82 @@ export default function ContactModal({
           exit={{ opacity: 0 }}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.92, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            exit={{ scale: 0.92, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl"
+            className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl p-6 w-full max-w-md shadow-xl"
           >
-            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-              <h2 className="text-lg font-semibold">
-                {mode === 'edit' ? 'Edit Contact' : 'New Contact'}
-              </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="text-center mb-2">
+                <h2 className="text-xl font-bold text-slate-800">
+                  {mode === 'edit' ? 'Edit Contact' : 'New Contact'}
+                </h2>
+                <p className="text-sm text-slate-500">
+                  {mode === 'edit'
+                    ? 'Update this contact\'s information'
+                    : 'Fill out the form to add a new contact'}
+                </p>
+              </div>
 
-              <input name="name" defaultValue={contact?.name} placeholder="Name" required className="border rounded p-2" />
-              <input name="email" defaultValue={contact?.email} placeholder="Email" required className="border rounded p-2" />
-              <input name="phone" defaultValue={contact?.phone} placeholder="Phone" required className="border rounded p-2" />
-              <input name="company" defaultValue={contact?.company || ''} placeholder="Company" className="border rounded p-2" />
-              <select name="category" defaultValue={contact?.category || 'Customer'} required className="border rounded p-2">
-                {['Customer', 'Vendor', 'VIP', 'Partner', 'Employee'].map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+              {/* Inputs */}
+              <div className="space-y-3">
+                <input
+                  name="name"
+                  defaultValue={contact?.name}
+                  placeholder="Full Name"
+                  required
+                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+                <input
+                  name="email"
+                  defaultValue={contact?.email}
+                  placeholder="Email"
+                  required
+                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+                <input
+                  name="phone"
+                  defaultValue={contact?.phone}
+                  placeholder="Phone Number"
+                  required
+                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+                <input
+                  name="company"
+                  defaultValue={contact?.company || ''}
+                  placeholder="Company (Optional)"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+                />
+                <select
+                  name="category"
+                  defaultValue={contact?.category || 'Customer'}
+                  required
+                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
+                >
+                  {['Customer', 'Vendor', 'VIP', 'Partner', 'Employee'].map(
+                    (c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    )
+                  )}
+                </select>
+              </div>
 
-              <div className="flex justify-end gap-2 pt-4">
-                <button type="button" onClick={onClose} className="text-gray-500 hover:underline">
+              {/* Buttons */}
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="text-slate-500 hover:underline text-sm"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-900">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-800 transition text-sm"
+                >
                   {mode === 'edit' ? 'Save Changes' : 'Create'}
                 </button>
               </div>

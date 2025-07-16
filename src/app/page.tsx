@@ -8,6 +8,7 @@ import ContactTable from '@/components/ContactTable';
 import ContactModal from '@/components/ContactModal';
 import ConfirmDelete from '@/components/ConfirmDelete';
 import ContactViewModal from '@/components/ContactViewModal';
+import Toaster from '@/components/Toaster';
 import { Contact } from '@/types/contact';
 import {
   getAllContacts,
@@ -29,6 +30,7 @@ export default function HomePage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
   const [viewingContact, setViewingContact] = useState<Contact | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -63,12 +65,15 @@ export default function HomePage() {
         setContacts((prev) =>
           prev.map((c) => (c.id === updated.id ? updated : c))
         );
+        setToast({ message: 'Contact updated successfully.', type: 'success' });
       } else {
         const created = await createContact(data);
         setContacts((prev) => [...prev, created]);
+        setToast({ message: 'Contact created successfully.', type: 'success' });
       }
     } catch (err) {
       console.error('Error saving contact:', err);
+      setToast({ message: 'Failed to save contact.', type: 'error' });
     } finally {
       setShowModal(false);
     }
@@ -78,8 +83,10 @@ export default function HomePage() {
     try {
       await deleteContact(id);
       setContacts((prev) => prev.filter((c) => c.id !== id));
+      setToast({ message: 'Contact deleted.', type: 'success' });
     } catch (err) {
       console.error('Error deleting contact:', err);
+      setToast({ message: 'Failed to delete contact.', type: 'error' });
     } finally {
       setContactToDelete(null);
       setConfirmOpen(false);
@@ -101,22 +108,34 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen px-4 py-10 sm:px-8 md:px-16 text-slate-800">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto relative">
 
+        {/* Enhanced Heading */}
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-14 relative"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <h1 className="text-4xl sm:text-5xl font-bold text-green-800 tracking-tight drop-shadow-sm">
+          {/* Glowing radial background behind heading */}
+          <div className="absolute inset-0 flex items-center justify-center -z-10">
+            <div className="w-72 h-72 bg-green-400/20 rounded-full blur-3xl animate-pulse-slow" />
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl font-bold text-green-800 tracking-tight drop-shadow-md leading-tight font-[var(--font-merriweather)]">            
             SansManagement
           </h1>
-          <p className="mt-2 text-slate-500 text-sm sm:text-base">
-            A sleek contact management system
-          </p>
+          <motion.p
+            className="mt-3 text-base sm:text-lg text-slate-600 font-medium"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            A sleek and powerful contact management system
+          </motion.p>
         </motion.div>
 
+        {/* Search + Filter + Add Button */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
           <div className="relative w-full sm:w-1/2">
             <FiSearch className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
@@ -151,7 +170,13 @@ export default function HomePage() {
           </button>
         </div>
 
-        {loading && <p className="text-slate-500">Loading contacts...</p>}
+        {/* Table or Messages */}
+        {loading && (
+          <div className="flex justify-center py-10">
+            <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
         {error && <p className="text-red-500">{error}</p>}
 
         {!loading && !error && (
@@ -173,6 +198,7 @@ export default function HomePage() {
           </motion.div>
         )}
 
+        {/* Modals */}
         <ContactModal
           mode={editingContact ? 'edit' : 'create'}
           contact={editingContact}
@@ -195,6 +221,15 @@ export default function HomePage() {
           contact={viewingContact}
           onClose={() => setViewingContact(null)}
         />
+
+        {/* Toaster */}
+        {toast && (
+          <Toaster
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
       </div>
     </main>
   );
