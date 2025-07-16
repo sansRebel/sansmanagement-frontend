@@ -1,6 +1,4 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
-@import "tailwindcss/colors";
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -24,5 +22,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans, system-ui), sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
