@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Contact, ContactCategory } from '@/types/contact';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,18 +19,36 @@ export default function ContactModal({
   onClose,
   onSubmit,
 }: ContactModalProps) {
+  const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const data = {
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      phone: formData.get('phone') as string,
-      company: formData.get('company') as string,
-      category: formData.get('category') as ContactCategory,
-    };
-    onSubmit(data);
+
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const phone = formData.get('phone') as string;
+    const company = formData.get('company') as string;
+    const category = formData.get('category') as ContactCategory;
+
+    const newErrors: { email?: string; phone?: string } = {};
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+
+    const phoneRegex = /^\d+$/;
+    if (!phoneRegex.test(phone)) {
+      newErrors.phone = 'Phone number must contain only numbers.';
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    onSubmit({ name, email, phone, company, category });
   };
 
   return (
@@ -69,20 +88,40 @@ export default function ContactModal({
                   required
                   className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
                 />
-                <input
-                  name="email"
-                  defaultValue={contact?.email}
-                  placeholder="Email"
-                  required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
-                />
-                <input
-                  name="phone"
-                  defaultValue={contact?.phone}
-                  placeholder="Phone Number"
-                  required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none"
-                />
+                <div>
+                  <input
+                    name="email"
+                    type="text"
+                    defaultValue={contact?.email}
+                    placeholder="Email"
+                    required
+                    className={`w-full px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                      errors.email
+                        ? 'border-red-500 focus:ring-red-400'
+                        : 'border-slate-300 focus:ring-green-500'
+                    }`}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  )}
+                </div>
+                <div>
+                  <input
+                    name="phone"
+                    type="text"
+                    defaultValue={contact?.phone}
+                    placeholder="Phone Number"
+                    required
+                    className={`w-full px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                      errors.phone
+                        ? 'border-red-500 focus:ring-red-400'
+                        : 'border-slate-300 focus:ring-green-500'
+                    }`}
+                  />
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  )}
+                </div>
                 <input
                   name="company"
                   defaultValue={contact?.company || ''}
