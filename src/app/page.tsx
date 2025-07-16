@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
+
 import ContactTable from '@/components/ContactTable';
 import ContactModal from '@/components/ContactModal';
 import ConfirmDelete from '@/components/ConfirmDelete';
@@ -97,53 +100,77 @@ export default function HomePage() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8 md:px-16 text-gray-800 font-sans">
+    <main className="min-h-screen px-4 py-10 sm:px-8 md:px-16 text-slate-800">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Contact Directory</h1>
+
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
+          <h1 className="text-4xl sm:text-5xl font-bold text-green-800 tracking-tight drop-shadow-sm">
+            SansManagement
+          </h1>
+          <p className="mt-2 text-slate-500 text-sm sm:text-base">
+            A sleek contact management system
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+          <div className="relative w-full sm:w-1/2">
+            <FiSearch className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by name, email, or company..."
+              className="pl-10 pr-4 py-2 border border-slate-300 rounded-md w-full shadow-sm focus:ring-2 focus:ring-green-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="relative w-full sm:w-1/4">
+            <FiFilter className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+            <select
+              className="pl-10 pr-4 py-2 border border-slate-300 rounded-md w-full shadow-sm focus:ring-2 focus:ring-green-500"
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              <option value="Customer">Customer</option>
+              <option value="Vendor">Vendor</option>
+              <option value="VIP">VIP</option>
+              <option value="Partner">Partner</option>
+              <option value="Employee">Employee</option>
+            </select>
+          </div>
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-900 transition shadow-md w-full sm:w-auto"
             onClick={openCreate}
           >
-            + Add Contact
+            <FiPlus size={16} /> Add Contact
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Search by name, email, or company..."
-            className="px-4 py-2 border border-gray-300 rounded w-full sm:w-1/2"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <select
-            className="px-4 py-2 border border-gray-300 rounded w-full sm:w-1/4"
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          >
-            <option value="">All Categories</option>
-            <option value="Customer">Customer</option>
-            <option value="Vendor">Vendor</option>
-            <option value="VIP">VIP</option>
-            <option value="Partner">Partner</option>
-            <option value="Employee">Employee</option>
-          </select>
-        </div>
-
-        {loading && <p className="text-gray-500">Loading contacts...</p>}
+        {loading && <p className="text-slate-500">Loading contacts...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
         {!loading && !error && (
-          <ContactTable
-            contacts={filteredContacts}
-            onEdit={openEdit}
-            onDelete={(contact) => {
-              setContactToDelete(contact);
-              setConfirmOpen(true);
-            }}
-            onView={(contact) => setViewingContact(contact)}
-          />
+          <motion.div
+            key={`${searchQuery}-${filterCategory}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <ContactTable
+              contacts={filteredContacts}
+              onEdit={openEdit}
+              onDelete={(contact) => {
+                setContactToDelete(contact);
+                setConfirmOpen(true);
+              }}
+              onView={(contact) => setViewingContact(contact)}
+            />
+          </motion.div>
         )}
 
         <ContactModal

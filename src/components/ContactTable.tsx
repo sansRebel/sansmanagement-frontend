@@ -1,6 +1,7 @@
 'use client';
 
 import { Contact } from '@/types/contact';
+import { FiEye, FiEdit, FiTrash2 } from 'react-icons/fi';
 
 interface ContactTableProps {
   contacts: Contact[];
@@ -16,9 +17,9 @@ export default function ContactTable({
   onView,
 }: ContactTableProps) {
   return (
-    <div className="overflow-x-auto rounded-lg shadow-md">
-      <table className="min-w-full bg-white divide-y divide-gray-200 text-sm text-left">
-        <thead className="bg-gray-100 text-xs uppercase text-gray-600 tracking-wider">
+    <div className="overflow-x-auto rounded-xl shadow-lg bg-white/60 backdrop-blur-md border border-slate-100">
+      <table className="min-w-full text-sm text-left">
+        <thead className="bg-slate-100 text-xs uppercase text-slate-600 tracking-wider">
           <tr>
             <th className="px-6 py-3">Name</th>
             <th className="px-6 py-3">Email</th>
@@ -28,32 +29,35 @@ export default function ContactTable({
             <th className="px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200 text-gray-700">
+        <tbody className="divide-y divide-slate-200 text-slate-700">
           {contacts.map((contact) => (
-            <tr key={contact.id} className="hover:bg-gray-50 transition">
+            <tr
+              key={contact.id}
+              className="hover:bg-blue-50/60 transition duration-200 ease-in-out"
+            >
               <td className="px-6 py-4">{contact.name}</td>
               <td className="px-6 py-4">{contact.email}</td>
               <td className="px-6 py-4">{contact.phone}</td>
               <td className="px-6 py-4">{contact.company || '-'}</td>
               <td className="px-6 py-4">{contact.category}</td>
-              <td className="px-6 py-4 text-right space-x-2">
+              <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                 <button
-                  className="text-gray-600 hover:text-gray-800 font-medium"
+                  className="text-slate-600 hover:text-slate-800 inline-flex items-center gap-1"
                   onClick={() => onView(contact)}
                 >
-                  View
+                  <FiEye size={16} /> View
                 </button>
                 <button
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-green-600 hover:text-green-800 inline-flex items-center gap-1"
                   onClick={() => onEdit(contact)}
                 >
-                  Edit
+                  <FiEdit size={16} /> Edit
                 </button>
                 <button
-                  className="text-red-600 hover:text-red-800 font-medium"
+                  className="text-red-600 hover:text-red-800 inline-flex items-center gap-1"
                   onClick={() => onDelete(contact)}
                 >
-                  Delete
+                  <FiTrash2 size={16} /> Delete
                 </button>
               </td>
             </tr>
